@@ -1,13 +1,13 @@
-package com.service_payment;
+package service_profile;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ServicePaymentApplication {
+public class ServiceProfileApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ServicePaymentApplication.class, args);
+		SpringApplication.run(ServiceProfileApplication.class, args);
 	}
 
 }
