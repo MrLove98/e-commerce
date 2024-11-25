@@ -16,5 +16,9 @@ spring:
       ddl-auto: update
   show-sql: true
 
+springdoc:
+  swagger-ui.path: /swagger-ui.html
+
+  #http://192.168.0.104:8080/swagger-ui/index.html
 
 #  Todo: Config Firebase to save image files
