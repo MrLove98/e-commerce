@@ -1,0 +1,61 @@
+
+#Purpose: checking Log4j2 có hoặt động tốt ko trace, debug, info, warn, error, fatal.
+#Nếu mà Error: Log4j2 sẽ chỉ log các vấn đề nghiêm trọng liên quan đến chính nó:
+#Ví dụ: Nó ko thể đọc file cấu hình, hoặc lỗi nặng khác
+#Tóm lại: status => Giúp bạn tự động giám sát và kiểm tra hoạt động của Log4j2 mà ko ảnh hưởng tói log chính của ứng dụng
+
+status: error
+
+#Tên của logger (tùy chọn).
+#   name: không có tác động trực tiếp đến cách Log4j2 hoạt động.
+#         Nó chỉ mang ý nghĩa nhận dạng và hữu ích trong việc quản lý, debug, hoặc ghi chú cấu hình.
+#
+#DEBUG Logging_For_Service_Payment initialized with configuration file: log4j2.xml
+#
+name: Logging_For_Eureka_Server
+
+# Appenders: define where the log messages are output (e.g, console, files, or other destinations)
+
+#On Console
+appender:
+  console:
+    type: Console  #Console appender outputs logs to the console (e.g., terminal or IDE console).
+    name: Eureka_Server_ConsoleAppender  # Logical name for this appender.
+    layout.type: PatternLayout  # Determines the layout for log messages.
+    layout.pattern: "%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{36} - %msg%n"  #Specifies the format of the log message.
+
+
+  #     The Format Logging:    2024-11-26 15:00:45 [main] INFO  MyClass - This is a log message.
+  #
+  #  %d{yyyy-MM-dd HH:mm:ss}: Timestamp of the log (in the specified date format).
+  #  [%t]: Thread name.
+  #  %-5level: Log level (padded to 5 characters for alignment).
+  #  %logger{36}: Logger name (truncated to 36 characters).
+  #     - %msg: The actual log message.
+  #  %n: Newline.
+
+
+  file:
+    type: File
+    name: Eureka_Server_FileAppender  # Logical name for this appender.
+    #    file-name: logs/Service_Payment.log  # Setting path for save file-logging
+
+    fileName: ${sys:logging.file.name}  # Refer to the system property_file
+    layout.type: PatternLayout
+    layout.pattern: "%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{36} - %msg%n"
+
+
+
+# Loggers:  Xác định các logger cụ thể cho từng package hoặc lớp.
+# Loggers define how logs are generated for specific parts of your application.
+logger:
+  application:
+    name: src.main.java.service_profile  #Specifies the package or class for which this logger applies.
+    level: debug   #Defines the log levels to be captured for this logger.
+    additivity: false       #Controls whether logs are propagated to parent loggers.
+      #      false: Prevents logs from being sent to the root logger.
+    #      true: Logs are propagated to the root logger (default behavior).
+    appenderRef:
+      console.ref: ConsoleAppender  # Purpose: Links this logger to an appender.
+      #Value: Refers to the ConsoleAppender, meaning logs from this logger will be sent to the console.
+
