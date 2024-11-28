@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: service_profile
+    name: profile-service
    #Todo: Config Database
   datasource:
     url: jdbc:mysql://localhost:3306/s_profile
@@ -15,6 +15,17 @@ spring:
       #      ddl-auto: create-drop
       ddl-auto: update
   show-sql: true
+
+openfeign:
+  clients:
+    client-1:
+      name: inventory-service
+
+#Todo: config Eureka-Client can known the url of Eureka-Server
+eureka:
+  client:
+    serviceUrl.defaultZone: http://localhost:8761/eureka
+
 
 
 #Todo: Config swagger

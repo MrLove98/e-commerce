@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: inventory_service
+    name: inventory-service
     #Todo: Config Database
   datasource:
     url: jdbc:mysql://localhost:3306/s_inventory
