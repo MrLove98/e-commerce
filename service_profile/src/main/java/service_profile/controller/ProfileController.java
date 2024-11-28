@@ -1,6 +1,7 @@
 package service_profile.controller;
 
 import org.springframework.web.bind.annotation.*;
+import service_profile.clients.InventoryClient;
 import service_profile.dto.PageResponse;
 import service_profile.dto.ProfileDto;
 import service_profile.dto.UpdateProfileDto;
@@ -10,9 +11,12 @@ import service_profile.services.IProfileService;
 @RestController
 public class ProfileController {
 
+    private final InventoryClient inventoryClient;
+
     private final IProfileService iProfileService;
 
-    public ProfileController(IProfileService iProfileService) {
+    public ProfileController(InventoryClient inventoryClient, IProfileService iProfileService) {
+        this.inventoryClient = inventoryClient;
         this.iProfileService = iProfileService;
     }
 
@@ -44,7 +48,7 @@ public class ProfileController {
 
     @GetMapping("/h")
     public String getHello() {
-        return "hello Service Profile";
+        return inventoryClient.getXinChao();
     }
 
 
