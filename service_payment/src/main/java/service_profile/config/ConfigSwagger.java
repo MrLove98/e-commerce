@@ -9,11 +9,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @OpenAPIDefinition(
         info = @Info(
-                title = "REST API for Service_Payment", version = "1.0",
-                description = "REST API description...  => For Service_Payment",
-                contact = @Contact(name = "mr.nquangtinh@gmail.com")
+                title = "REST API for Payment_service", version = "1.0",
+                description = "REST API description...  => For Payment_service",
+                contact = @Contact(name = "mr.nquangtinh@gmai.com")
         )
 )
-
 public class ConfigSwagger {
 }

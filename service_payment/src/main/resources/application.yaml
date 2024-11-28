@@ -1,64 +1,26 @@
-#https://erkanyasun:
-#  medium:
-#    com/mastering-spring-boot-profiles-a-guide-to-environment-specific-configurations-646e7535db03:
-#
-# Tutorial config file multiple properties
-#
-
 server:
   port: 8082
-
-
-#By having spring-cloud-starter-netflix-eureka-client on the classpath,
-#  your application automatically registers with the Eureka Server. Configuration is required to locate the Eureka server,
-#eureka:
-#  client:
-#    serviceUrl:
-#      defaultZone: http://localhost:8761/eureka/
-
-#      The default application name (that is, the service ID), virtual host, and non-secure port (taken from the Environment)
-#      are ${spring.application.name}, ${spring.application.name} and ${server.port}, respectively.
-#
-#      Having spring-cloud-starter-netflix-eureka-client on the classpath makes the app into both
-#      a Eureka “instance” (that is, it registers itself) and a “client” (it can query the registry to locate other services).
-#      The instance behaviour is driven by eureka.instance.* configuration keys, but the defaults are fine if you ensure
-#      that your application has a value for spring.application.name (this is the default for the Eureka service ID or VIP).
-#
-#
-#  spring.application.name: service_payment will config to display on Eureka-Server
-
 
 spring:
   application:
     name: service_payment
-  profiles:
-    active: dev
-#      active: pro
 
-#    #After: We will using Docker-compose file
-#    datasource:
-#      url: jdbc:mysql://localhost:3306/s_payment
-#      username: root
-#      password: rootuser@
-#      driver-class-name: com.mysql.cj.jdbc.Driver
-#    jpa:
-#      hibernate:
-#        ddl-auto: create-drop
-#    #      ddl-auto: update
-#    show-sql: true
+    #Todo: Config swap muntiple env
+    #  profiles:
+    #    active: dev
+    ##      active: pro
 
-
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
-
-#  defaultZone is a magic string fallback value that provides the service URL for any client
-#  that does not express a preference (in other words, it is a useful default).
-
-
-  springdoc:
-    swagger-ui.path: /payment-swagger-ui.html
+  #Todo: Config Database
+  datasource:
+    url: jdbc:mysql://localhost:3306/s_payment
+    username: root
+    password: rootuser@
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      #      ddl-auto: create-drop
+      ddl-auto: update
+  show-sql: true
 
 
 #Todo: Config swagger

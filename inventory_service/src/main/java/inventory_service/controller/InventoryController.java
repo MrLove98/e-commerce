@@ -1,16 +1,15 @@
-package service_profile.controller;
+package inventory_service.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping(path = "/payment")
 @RestController
-public class PaymentController {
+@RequestMapping("/inventory")
+public class InventoryController {
 
     @GetMapping("/h")
-    public String getHello() {
-        return "Payment Service Xin chao";
+    public String getHello(){
+        return "Inventory hello";
     }
-
 }
