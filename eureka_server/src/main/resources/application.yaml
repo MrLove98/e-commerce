@@ -1,13 +1,23 @@
-spring:
-  application:
-    name: eureka_server
 server:
   port: 8761
+
+spring:
+  application.name: eureka_server
+
+#Todo: Config Eureka
 eureka:
+  instance.hostname: localhost
   client:
+#    service-url.defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka
+    service-url.defaultZone: http://localhost:8761/eureka
     register-with-eureka: false
     fetch-registry: false
-logging:
-  level:
-    com.netflix.eureka: OFF
-    com.netflix.discovery: OFF
+
+
+#logging:
+#  level:
+#    com.netflix.eureka: OFF
+#    com.netflix.discovery: OFF
+#  #Todo: Config Logging
+#  file:
+#    name: logs/eureka_server_logs/eureka_server_local.log  #Setup path save file-logging

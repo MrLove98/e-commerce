@@ -13,4 +13,6 @@ public interface IProfileService {
     String isDeleteOneProfile(String email, boolean delete);
 
     PageResponse<ProfileDto> getAllProfile(int pageNumber, int pageSize);
+
+    String xinchao();
 }

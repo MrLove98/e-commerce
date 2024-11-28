@@ -31,7 +31,7 @@ public class ProfileController {
     @DeleteMapping("/delete/{email}")
     public String deleteProfile(@PathVariable String email,
                                 @RequestParam(value = "true", required = false, defaultValue = "true") boolean delete
-                                ) {
+    ) {
         return iProfileService.isDeleteOneProfile(email, delete);
     }
 
@@ -41,6 +41,17 @@ public class ProfileController {
     ) {
         return iProfileService.getAllProfile(pageNumber, pageSize);
     }
+
+    @GetMapping("/h")
+    public String getHello() {
+        return "hello Service Profile";
+    }
+
+
+//    @GetMapping("/xinchao")
+//    public String xinchao() {
+//        return iProfileService.xinchao();
+//    }
 }
 
 /**
@@ -48,4 +59,4 @@ public class ProfileController {
  * Use @PostMapping for creating new resources.
  * Use @PutMapping when replacing a resource entirely or creating one if it doesn’t exist.
  * Use @PatchMapping when updating specific fields of a resource without replacing the whole resource.
- * */
+ */

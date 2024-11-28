@@ -16,10 +16,23 @@ import java.util.stream.Collectors;
 @Service
 public class ProfileService implements IProfileService {
 
+//    private final PaymentClient paymentClient;
+
     private final ProfileRepository profileRepository;
 
     public ProfileService(ProfileRepository profileRepository) {
         this.profileRepository = profileRepository;
+    }
+
+//    public ProfileService(PaymentClient paymentClient, ProfileRepository profileRepository) {
+//        this.paymentClient = paymentClient;
+//        this.profileRepository = profileRepository;
+//    }
+
+    @Override
+    public String xinchao() {
+//        return paymentClient.xinchao();
+        return "xinchao";
     }
 
     @Override
@@ -67,7 +80,7 @@ public class ProfileService implements IProfileService {
         var entity = profileRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("Profile is not found"));
 
-        if (!entity.isDelete()){
+        if (!entity.isDelete()) {
             entity.setDelete(delete);
 
             profileRepository.save(entity);
