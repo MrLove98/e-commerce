@@ -1,0 +1,22 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: inventory_service
+    #Todo: Config Database
+  datasource:
+    url: jdbc:mysql://localhost:3306/s_inventory
+    username: root
+    password: rootuser@
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      #      ddl-auto: create-drop
+      ddl-auto: update
+  show-sql: true
+
+
+#Todo: Config swagger
+springdoc:
+  swagger-ui.path: /inventory-swagger-ui.html

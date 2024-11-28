@@ -8,11 +8,13 @@
         <option value="$PROJECT_DIR$/eureka_server/pom.xml" />
         <option value="$PROJECT_DIR$/service_payment/pom.xml" />
         <option value="$PROJECT_DIR$/service_profile/pom.xml" />
+        <option value="$PROJECT_DIR$/inventory_service/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
       <set>
         <option value="$PROJECT_DIR$/discovery_service/pom.xml" />
+        <option value="$PROJECT_DIR$/service_payment/pom.xml" />
       </set>
     </option>
   </component>
