@@ -1,5 +1,6 @@
 package service_profile.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.web.bind.annotation.*;
 import service_profile.clients.InventoryClient;
 import service_profile.dto.PageResponse;
@@ -20,6 +21,7 @@ public class ProfileController {
         this.iProfileService = iProfileService;
     }
 
+    @Operation(summary = "Creating new Profile" ,description = "hihi")
     @PostMapping("/create")
     public String createProfile(@RequestBody ProfileDto profileDto) {
         return iProfileService.createProfile(profileDto);

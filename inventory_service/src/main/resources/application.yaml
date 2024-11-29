@@ -17,10 +17,17 @@ spring:
   show-sql: true
 
 
+
 #Todo: config Eureka-Client can known the url of Eureka-Server
 eureka:
+  instance:
+    prefer-ip-address: true
   client:
-    serviceUrl.defaultZone: http://localhost:8761/eureka
+    serviceUrl.defaultZone: ${EUREKA_SERVER_ADDRESS:http://localhost:8761/eureka}
+    fetch-registry: true
+    register-with-eureka: true
+
+
 
 #Todo: Config swagger
 springdoc:
