@@ -3,9 +3,18 @@ server:
 
 spring.application.name: api-gateway
 
-#Todo: config Eureka-Client can known the url of Eureka-Server
-eureka.client.serviceUrl.defaultZone: http://localhost:8761/eureka
 
+#Todo: config Eureka-Client can known the url of Eureka-Server
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    serviceUrl.defaultZone: ${EUREKA_SERVER_ADDRESS:http://localhost:8761/eureka}
+    fetch-registry: true
+    register-with-eureka: true
+
+
+#Todo: Config logging
 logging.level.root: INFO
 logging.level.org.springframework.cloud.gateway.route.RouteDefinitionLocator: INFO
 logging:

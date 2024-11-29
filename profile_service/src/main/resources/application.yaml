@@ -23,9 +23,39 @@ openfeign:
 
 #Todo: config Eureka-Client can known the url of Eureka-Server
 eureka:
-  client:
-    serviceUrl.defaultZone: http://localhost:8761/eureka
+  instance:
+    prefer-ip-address: true
+          #      Configures the client to prefer using its IP address rather than its hostname when registering with the Eureka server.
+          #      Useful when hostname resolution might cause issues, especially in containerized or cloud environments.
 
+
+  client:
+    serviceUrl.defaultZone: ${EUREKA_SERVER_ADDRESS:http://localhost:8761/eureka}
+
+          #    eureka.client.serviceUrl.defaultZone
+          #    Specifies the URL(s) of the Eureka Server(s) that the client should connect to for service registration and discovery.
+          #    The value uses a Spring placeholder: ${EUREKA_SERVER_ADDRESS:http://localhost:8761/eureka}.
+          #    ${EUREKA_SERVER_ADDRESS}: Refers to an environment variable that can dynamically provide the server address at runtime.
+          #    http://localhost:8761/eureka: This is the default value if the EUREKA_SERVER_ADDRESS environment variable is not set.
+          #
+
+
+    fetch-registry: true
+          #      eureka.client.fetch-registry: true
+          #      Configures the client to fetch the registry of services from the Eureka Server.
+          #      True means the client will pull information about other registered services for service discovery.
+
+    register-with-eureka: true
+          #      eureka.client.register-with-eureka: true
+          #      Configures the client to register itself with the Eureka Server.
+          #      True means the service will appear as a registered service in the Eureka Server, making it discoverable by other services.
+
+
+#
+#
+#  Todo::
+#  - This configuration ensures that the service client can dynamically locate and interact with the Eureka Server,
+#  - enabling seamless service registration and discovery in a microservices architecture.
 
 
 #Todo: Config swagger
@@ -33,10 +63,4 @@ springdoc:
   swagger-ui.path: /profile-swagger-ui.html
   #http://192.168.0.104:8080/swagger-ui/index.html
 
-##Todo: Config Eureka
-#eureka:
-#  client:
-#    service-url.defaultZone: http://localhost:8761/eureka
-##    register-with-eureka: true
-##    fetch-registry: true
 
