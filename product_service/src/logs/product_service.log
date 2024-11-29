@@ -1,0 +1,12 @@
+Nov 29, 2024 8:41:12 AM product_service.services.ProductService createProduct
+INFO: Using create Product
+Nov 29, 2024 8:41:58 AM product_service.services.ProductService createProduct
+INFO: Using create Product
+Nov 29, 2024 8:59:58 AM product_service.services.ProductService createProduct
+INFO: Using create Product
+Nov 29, 2024 9:06:27 AM product_service.services.ProductService createProduct
+INFO: Using create Product
+Nov 29, 2024 9:08:21 AM product_service.services.ProductService createProduct
+INFO: Using create Product
+Nov 29, 2024 9:08:21 AM product_service.services.ProductService createProduct
+INFO: Save Successfully Product: Product(id=674922157836dd66ab9d2b74, name=product_1, description=description_1, price=12321312)
