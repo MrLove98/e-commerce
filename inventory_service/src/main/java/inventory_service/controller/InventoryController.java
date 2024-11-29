@@ -1,15 +1,28 @@
 package inventory_service.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import inventory_service.service.IInventoryService;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/inventory")
+@RequestMapping("/api/inventory")
 public class InventoryController {
+
+    private final IInventoryService iInventoryService;
+
+    public InventoryController(IInventoryService iInventoryService) {
+        this.iInventoryService = iInventoryService;
+    }
 
     @GetMapping("/h")
     public String getHello(){
         return "Inventory hello";
     }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public boolean isInStock(@RequestParam String skuCode, @RequestParam int quantity){
+        return iInventoryService.isInStock(skuCode, quantity);
+    }
+
 }

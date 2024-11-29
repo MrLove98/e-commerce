@@ -1,0 +1,25 @@
+server.port: 8085
+
+spring:
+  application.name: product-service
+
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      username: root
+      password: rootuser@
+      database: product-service
+      authentication-database: admin
+
+#Todo: config Eureka-Client can known the url of Eureka-Server
+eureka:
+  client:
+    serviceUrl.defaultZone: http://localhost:8761/eureka
+
+
+
+#Todo: Config swagger
+springdoc:
+  swagger-ui.path: /product-swagger-ui.html
+  #http://192.168.0.104:8080/swagger-ui/index.html

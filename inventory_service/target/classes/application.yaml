@@ -17,6 +17,11 @@ spring:
   show-sql: true
 
 
+#Todo: config Eureka-Client can known the url of Eureka-Server
+eureka:
+  client:
+    serviceUrl.defaultZone: http://localhost:8761/eureka
+
 #Todo: Config swagger
 springdoc:
   swagger-ui.path: /inventory-swagger-ui.html
