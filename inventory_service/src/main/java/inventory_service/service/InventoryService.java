@@ -17,7 +17,7 @@ public class InventoryService implements IInventoryService {
     }
 
     //
-    @Cacheable
+//    @Cacheable
 //    @CacheEvict
 //    @CachePut
 //    @CacheConfig
