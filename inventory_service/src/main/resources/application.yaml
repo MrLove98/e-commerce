@@ -1,0 +1,55 @@
+server:
+  port: 8084
+
+spring:
+  application:
+    name: inventory-service
+    #Todo: Config Database
+  datasource:
+    url: jdbc:mysql://localhost:3306/s_inventory
+    username: root
+    password: ${MYSQL_ROOT_PASSWORD:rootuser@} #Nếu variable MYSQL_ROOT_PASSWORD = null, thì lấy "rootuser@"
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      #      ddl-auto: create-drop
+      ddl-auto: update
+  show-sql: true
+
+<<<<<<< Updated upstream
+  #Todo: Config max file ?
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+  #Todo: Config host:port
+  redis:
+    host: ${REDIS_HOST:localhost} #Default to 'localhost' if not provided
+    port: ${REDIS_PORT:6379} #Default to 'port' if not provided
+=======
+---
+spring:
+  redis:
+    host: redis
+    port: 6379
+    timeout: 2000ms
+
+>>>>>>> Stashed changes
+
+
+
+#Todo: config Eureka-Client can known the url of Eureka-Server
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    serviceUrl.defaultZone: ${EUREKA_SERVER_ADDRESS:http://localhost:8761/eureka}
+    fetch-registry: true
+    register-with-eureka: true
+
+
+
+#Todo: Config swagger
+springdoc:
+  swagger-ui.path: /inventory-swagger-ui.html

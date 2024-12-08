@@ -1,5 +1,29 @@
+server:
+  port: 8082
+
 spring:
   application:
     name: service_payment
-server:
-  port: 8082
+
+    #Todo: Config swap muntiple env
+    #  profiles:
+    #    active: dev
+    ##      active: pro
+
+  #Todo: Config Database
+  datasource:
+    url: jdbc:mysql://localhost:3306/s_payment
+    username: root
+    password: rootuser@
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      #      ddl-auto: create-drop
+      ddl-auto: update
+  show-sql: true
+
+
+#Todo: Config swagger
+springdoc:
+  swagger-ui.path: /payment-swagger-ui.html
+  #http://192.168.0.104:8080/swagger-ui/index.html

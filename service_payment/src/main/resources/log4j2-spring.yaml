@@ -1,0 +1,82 @@
+#status: error
+##name: Logging_For_Service_Payment
+#
+## The appenders section should group all appenders (console and file).
+## Appenders: define where the log messages are output (e.g, console, files, or other destinations)
+##On Console
+#appender:
+#  console:
+#    type: Console  #Console appender outputs logs to the console (e.g., terminal or IDE console).
+#    name: Service_Payment_ConsoleAppender  # Logical name for this appender.
+#    layout.type: PatternLayout  # Determines the layout for log messages.
+#    layout.pattern: "%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{36} - %msg%n"  #Specifies the format of the log message.
+#
+#
+#                #     The Format Logging:    2024-11-26 15:00:45 [main] INFO  MyClass - This is a log message.
+#                #
+#                #  %d{yyyy-MM-dd HH:mm:ss}: Timestamp of the log (in the specified date format).
+#                #  [%t]: Thread name.
+#                #  %-5level: Log level (padded to 5 characters for alignment).
+#                #  %logger{36}: Logger name (truncated to 36 characters).
+#                #     - %msg: The actual log message.
+#                #  %n: Newline.
+#  file:
+#    type: File
+#    name: Service_Payment_FileAppender  # Logical name for this appender.
+#    fileName: ${sys:logging.file.name}  # Refer to the system property_file
+#    layout.type: PatternLayout
+#    layout.pattern: "%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{36} - %msg%n"
+#
+#
+#
+## The loggers section defines specific loggers for classes or packages.
+## Loggers:  Xác định các logger cụ thể cho từng package hoặc lớp.
+## Loggers define how logs are generated for specific parts of your application.
+#loggers:
+#  - logger:
+#      name: src.main.java  #Specifies the package or class for which this logger applies.
+#      level: debug    #Defines the log levels to be captured for this logger.   debug, error, info
+#      additivity: false   #Controls whether logs are propagated to parent loggers.
+#                          #      false: Prevents logs from being sent to the root logger.
+#                          #      true: Logs are propagated to the root logger (default behavior).
+#      appenderRefs:
+#        - ref: ConsoleAppender    # Purpose: Links this logger to an appender.
+#                                  #Value: Refers to the ConsoleAppender, meaning logs from this logger will be sent to the console.
+#        - ref: FileAppender
+#
+#
+## The rootLogger section is for global logging behavior.
+#rootLogger:
+#  level: info
+#  appenderRefs:
+#    - ref: ConsoleAppender
+#    - ref: FileAppender
+
+
+
+status: error
+
+name: Logging_For_Service_Payment
+
+appender:
+  console:
+    type: Console
+    name: Service_Payment_ConsoleAppender
+    layout.type: PatternLayout
+    layout.pattern: "%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{36} - %msg%n"
+
+  file:
+    type: File
+    name: Service_Payment_FileAppender
+    fileName: "${sys:logging.file.name}"  # Đảm bảo rằng `logging.file.name` được định nghĩa trong `application.properties` hoặc `application.yml`
+    layout.type: PatternLayout
+    layout.pattern: "%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{36} - %msg%n"
+
+logger:
+  application:
+    name: src.main.java
+    level: debug, error, info
+    additivity: false
+    appenderRef:
+      console.ref: Service_Payment_ConsoleAppender
+      file.ref: Service_Payment_FileAppender

@@ -1,0 +1,54 @@
+server:
+  port: 8888
+
+spring.application.name: api-gateway
+
+
+#Todo: config Eureka-Client can known the url of Eureka-Server
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    serviceUrl.defaultZone: ${EUREKA_SERVER_ADDRESS:http://localhost:8761/eureka}
+    fetch-registry: true
+    register-with-eureka: true
+
+
+#Todo: Config logging
+logging.level.root: INFO
+logging.level.org.springframework.cloud.gateway.route.RouteDefinitionLocator: INFO
+logging:
+  level:
+    org:
+      springframework:
+        cloud:
+          gateway: TRACE
+
+#Todo: Config Routes for other services on Api-gateway
+#Explain:
+#  1, The Predicates-attribute: Yes, Predicates in Spring Cloud Gateway act as conditions or rules
+#                               that incoming requests must satisfy for the Gateway to route them
+#                               to a specific service. If a request does not match any predicate, it will not be routed.
+#
+#                Example: You can combine multiple predicates for complex conditions.
+#                                         predicates:
+#                                               - Path=/inventory/**
+#                                               - Header=Authorization, Bearer.*
+#                                               - Method=GET
+
+# Todo: Instead config routes on application.yaml file, you can config this on ApiGatewayConfig.class
+#
+#spring:
+#  cloud:
+#    gateway:
+#      routes:
+#        - id: profile-service-route
+#          uri: lb://profile-service
+#          predicates:
+#            - Path=/profile/**
+#
+#        - id: inventory-service-route
+#          uri: lb://inventory-service
+#          predicates:
+#            - Path=/inventory/**
+#
