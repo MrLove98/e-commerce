@@ -1,5 +1,5 @@
 server:
-  port: 8082
+  port: 8084
 
 spring:
   application:
@@ -16,11 +16,26 @@ spring:
       ddl-auto: update
   show-sql: true
 
+---
+spring:
+  redis:
+    host: redis
+    port: 6379
+    timeout: 2000ms
+
+
+
 
 #Todo: config Eureka-Client can known the url of Eureka-Server
 eureka:
+  instance:
+    prefer-ip-address: true
   client:
-    serviceUrl.defaultZone: http://localhost:8761/eureka
+    serviceUrl.defaultZone: ${EUREKA_SERVER_ADDRESS:http://localhost:8761/eureka}
+    fetch-registry: true
+    register-with-eureka: true
+
+
 
 #Todo: Config swagger
 springdoc:

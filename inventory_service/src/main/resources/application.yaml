@@ -8,13 +8,34 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/s_inventory
     username: root
-    password: rootuser@
+    password: ${MYSQL_ROOT_PASSWORD:rootuser@} #Nếu variable MYSQL_ROOT_PASSWORD = null, thì lấy "rootuser@"
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
       #      ddl-auto: create-drop
       ddl-auto: update
   show-sql: true
+
+<<<<<<< Updated upstream
+  #Todo: Config max file ?
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+  #Todo: Config host:port
+  redis:
+    host: ${REDIS_HOST:localhost} #Default to 'localhost' if not provided
+    port: ${REDIS_PORT:6379} #Default to 'port' if not provided
+=======
+---
+spring:
+  redis:
+    host: redis
+    port: 6379
+    timeout: 2000ms
+
+>>>>>>> Stashed changes
 
 
 

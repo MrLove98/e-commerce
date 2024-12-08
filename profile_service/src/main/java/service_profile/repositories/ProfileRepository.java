@@ -16,4 +16,6 @@ public interface ProfileRepository extends JpaRepository<ProfileEntity, Integer>
     Optional<ProfileEntity> findByEmail(String email);
 
     Page<ProfileEntity> findAll(Pageable pageable);
+
+    Page<ProfileEntity> findByEmail(String email, Pageable pageable);
 }

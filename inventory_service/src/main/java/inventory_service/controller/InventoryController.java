@@ -25,4 +25,10 @@ public class InventoryController {
         return iInventoryService.isInStock(skuCode, quantity);
     }
 
+    @GetMapping("/hello")
+    public String helloRedis(){
+        return iInventoryService.helloRedis();
+
+    }
+
 }

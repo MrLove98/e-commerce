@@ -10,6 +10,7 @@ services:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_SERVER_ID: 1
 
+
   kafka1_1:
     image: confluentinc/cp-kafka:7.3.2
     container_name: kafka1
@@ -25,36 +26,46 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,DOCKER:PLAINTEXT
         # Mỗi listener (như INTERNAL, EXTERNAL, DOCKER) được gán với một giao thức bảo mật.
         # Trong trường hợp này, cả 3 loại listener đều sử dụng giao thức PLAINTEXT (không mã hóa).
-        # PLAINTEXT nghĩa là các kết nối sẽ không được mã hóa (không có SSL/TLS).
-        #
-        #Ví dụ thực tế: Nếu bạn muốn các kết nối từ bên ngoài Docker phải được bảo mật, bạn có thể thay đổi EXTERNAL thành SSL. Khi đó cấu hình có thể là:
-        #  KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:SSL,DOCKER:PLAINTEXT
+      # PLAINTEXT nghĩa là các kết nối sẽ không được mã hóa (không có SSL/TLS).
+      #
+      #Ví dụ thực tế: Nếu bạn muốn các kết nối từ bên ngoài Docker phải được bảo mật, bạn có thể thay đổi EXTERNAL thành SSL. Khi đó cấu hình có thể là:
+      #  KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:SSL,DOCKER:PLAINTEXT
       #  (Ứng dụng bên ngoài sẽ kết nối qua HTTPS thay vì HTTP)
 
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL  # Kafka sử dụng một cơ chế gọi là inter-broker communication để các broker (nếu bạn có nhiều broker) giao tiếp với nhau.
         # Thuộc tính này xác định listener nào sẽ được sử dụng để các broker liên lạc.
-        # Ở đây, Kafka chọn INTERNAL làm kênh liên lạc giữa các broker.
-        # Ví dụ thực tế:
-        #Trong trường hợp bạn có 3 broker (Kafka cụm), chúng sẽ giao tiếp qua INTERNAL://kafka1:19092 hoặc tương tự.
-        #
+      # Ở đây, Kafka chọn INTERNAL làm kênh liên lạc giữa các broker.
+      # Ví dụ thực tế:
+      #Trong trường hợp bạn có 3 broker (Kafka cụm), chúng sẽ giao tiếp qua INTERNAL://kafka1:19092 hoặc tương tự.
+      #
       # Tóm gọn lại ==> Broker giao tiếp với nhau qua listener INTERNAL.
 
       KAFKA_ZOOKEEPER_CONNECT: "zookeeper1:2181"
         # ý nghĩa: Kafka cần Zookeeper để quản lý thông tin cluster, các phân vùng (partitions), và trạng thái của các broker.
-        # Thuộc tính này chỉ định địa chỉ của Zookeeper mà Kafka sẽ kết nối.
-        #    Host: zookeeper1 (tên container của Zookeeper trong Docker Compose).
-        #    Port: 2181 (cổng mặc định của Zookeeper).
-        # Ví dụ thực tế:
+      # Thuộc tính này chỉ định địa chỉ của Zookeeper mà Kafka sẽ kết nối.
+      #    Host: zookeeper1 (tên container của Zookeeper trong Docker Compose).
+      #    Port: 2181 (cổng mặc định của Zookeeper).
+      # Ví dụ thực tế:
       # Nếu Zookeeper chạy trên một máy khác hoặc bên ngoài Docker, bạn cần thay đổi giá trị thành địa chỉ đó, ví dụ: 192.168.1.100:2181.
 
       KAFKA_BROKER_ID: 1   # Mỗi Kafka broker trong cluster cần một ID duy nhất để nhận diện trong Cluster-Kafka
     depends_on:
       - zookeeper_1  # tên service:
     volumes:
-      - kafka-data-v1:/var/lib/kafka-v1/data
+      - e-commerce-v1:/var/lib/kafka-v1/data
+
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - e-commerce-v1:/var/lib/redis-v1/data
 
 volumes:
-  kafka-data-v1:
+  e-commerce-v1:
+
 
 #KAFKA_ADVERTISED_LISTENERS: là danh sách các "địa chỉ" (URL + Port) mà Kafka sẽ "quảng bá" để cho các client(ứng dụng) muốn
 # kết nối đến kafka.

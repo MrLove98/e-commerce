@@ -53,11 +53,15 @@ public class ProfileController {
         return inventoryClient.getXinChao();
     }
 
+    @GetMapping("/search/email")
+    public PageResponse<ProfileDto> getAllByEmail(@RequestParam(value = "pageNumber", required = false, defaultValue = "1") int pageNumber,
+                                                  @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize
+    ) {
+        return iProfileService.getAllProfile(pageNumber, pageSize);
+    }
 
-//    @GetMapping("/xinchao")
-//    public String xinchao() {
-//        return iProfileService.xinchao();
-//    }
+    
+
 }
 
 /**
