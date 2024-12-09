@@ -1,0 +1,182 @@
+version: '3.8'
+services:
+  mongoDB:
+    image: mongo:7.0.5
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootuser@
+      MONGO_INITDB_DATABASE: product-service
+    volumes:
+      - e-commerce-mysql-db-data:/var/data
+    networks:
+      - e-commerce-network
+
+  mysqlDB:
+    image: mysql:8.0
+    container_name: mysqldb
+    ports:
+      - '3308:3306'     # port_Host_Machine : port_default
+    cap_add:
+      - SYS_NICE
+    restart: always
+    environment:
+      MYSQL_USER: root
+      MYSQL_ROOT_PASSWORD: rootuser@
+    volumes:
+      - e-commerce-mysql-db-data:/var/lib/mysql      # Custom named volume for MySQL data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql  # Custom path for init script
+    healthcheck:
+      #      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      #      test: "mysql --user=$$MYSQL_DATABASE --password=$$MYSQL_ROOT_PASSWORD --execute \"SHOW DATABASES;\" || exit 1"
+      #      test: ["CMD-SHELL", "mysql ping -h localhost -u root --password=$$MYSQL_ROOT_PASSWORD --execute \"SHOW DATABASES;\" || exit 1"]
+#      test: [ "CMD-SHELL", "mysql -h 127.0.0.1 -u root --password=$$MYSQL_ROOT_PASSWORD --execute \"SHOW DATABASES;\" || exit 1" ]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "--password=$$MYSQL_ROOT_PASSWORD"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+
+  zookeeper-01:
+    image: confluentinc/cp-zookeeper:7.3.2
+    container_name: zookeeper-01
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_SERVER_ID: 1
+      ZOOKEEPER_SERVERS: zookeeper-01:2888:3888; zookeeper-02:2888:3888; zookeeper-03:2888:3888
+    networks:
+      - e-commerce-network
+
+  zookeeper-02:
+    image: confluentinc/cp-zookeeper:7.3.2
+    container_name: zookeeper-02
+    ports:
+      - "2182:2182"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2182
+      ZOOKEEPER_SERVER_ID: 2
+      #Định nghĩa danh sách các máy chủ Zookeeper trong Cluster, bao gồm chính zookeeper-01 và hai máy chủ zookeeper-02, và 03
+      ZOOKEEPER_SERVERS: zookeeper-01:2888:3888; zookeeper-02:2888:3888; zookeeper-03:2888:3888
+      #2888: Port được sử dụng cho giap tiếp giữa các máy chủ Zookeeper
+      #3888: Port được sử dụng cho giao tiếp giữa các Client và máy chủ Zookeeper
+    networks:
+      - e-commerce-network
+
+  zookeeper-03:
+    image: confluentinc/cp-zookeeper:7.3.2
+    container_name: zookeeper-03
+    ports:
+      - "2183:2183"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2183
+      ZOOKEEPER_SERVER_ID: 3
+      ZOOKEEPER_SERVERS: zookeeper-01:2888:3888; zookeeper-02:2888:3888; zookeeper-03:2888:3888
+    networks:
+      - e-commerce-network
+
+  kafka-broker-01:
+    image: confluentinc/cp-zookeeper:7.3.2
+    container_name: kafka-broker-01
+    ports:
+      - "9092:9092"    #Cổng 9092 (External): cho Client giao tiếp với Kafka qua port 9092 trên máy chủ
+      - "29092:29092"  # Cổng 29092(Internal - Docker): cổng dành riêng cho việt kết nối kafka trong môi trường Docker
+                      # Tức các container khác có thể giap tiếp với Kafka-broker-01 qua cổng này. Nhưng chú ý phải là
+                      # nằm trong cùng docker-networks như là ở đây "e-commerce-network"
+                      #==> Tức là Redis, MySQl container nằm trong "e-commerce-network" có thể communicate with Kafk-broker-01 through 29092 port
+    environment:
+      # Định nghĩa các Listener của Kafka và địa chỉ truy cập
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-broker-01:19092,EXTERNAL://${DOCKER_HOST_IP:-127.0.0.1}:9092,DOCKER://host.docker.internal:29092
+                    # INTERNAL://kafka-broker-01:19092 : Chú ý Internal : là chỉ dành riêng cho giap tiếp giữa các Broker-kafka trong cùng 1 cluster
+                    # EXTERNAL://${DOCKER_HOST_IP:-127.0.0.1}:9092  : Listener cho phép các client bên ngoài truy cập kaffka thông qua default host là 127.0.0.1:9092
+                    # DOCKER://host.docker.internal:29092  : Listener cho phép giao tiếp giữa các container Kafka trong cluster docker.
+
+      # Thiết lập giao thức bảo mật cho từng Listener, trong trường hợp này tất cả đều dùng "PLAINTEXT" là "Không mã hóa"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT, EXTERNAL:PLAINTEXT, DOCKER:PLAINTEXT
+
+      # Xác định listener dùng cho giap tiếp giữa các broker kafka, trong trường hợp này là INTERNAL
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper-01:2181,zookeeper-02:2182,zookeeper-03:2183"
+      KAFKA_BROKER_ID: 1
+
+      # Cấu hình mức độ log cho các thành phần trong Kafka
+      KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEvenHandler=INFO"
+
+      # Thiết lập số bảo sao cho chủ đề offset trong kafka
+      # topic "offset" lưu thông tin về vị trí đọc cuối cùng của mỗi consumer trong mỗi phân vùng của 1 kafka-topic
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+      # Số bản sao cho chủ đề nhật lý trạng thái giao dịch (transaction state log) trong kafka
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      # Chủ đề này lưu trữ thông tin về trạng thái cảu các giao dịch
+      # Cho phép kafka khôi phục giao dịch đang dở trong các trường hợp broker gặp sự cố
+    volumes:
+      - e-commerce-kafka-broker-01-data:/var/kafka-broker-01/data
+    networks:
+      - e-commerce-network
+    depends_on:
+      - zookeeper-01
+      - zookeeper-02
+      - zookeeper-03
+
+  kafka-broker-02:
+    image: confluentinc/cp-zookeeper:7.3.2
+    container_name: kafka-broker-02
+    ports:
+      - "9093:9093"
+      - "29093:29093"
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-broker-01:19093,EXTERNAL://${DOKCER_HOST_IP:-127.0.0.1}:9093,DOCKER://host.docker.internal:29093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT, EXTERNAL:PLAINTEXT, DOCKER:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper-01:2181,zookeeper-02:2182,zookeeper-03:2183"
+      KAFKA_BROKER_ID: 2
+      KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEvenHandler=INFO"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+    volumes:
+      - e-commerce-kafka-broker-02-data:/var/kafka-broker-02/data
+    networks:
+      - e-commerce-network
+    depends_on:
+      - zookeeper-01
+      - zookeeper-02
+      - zookeeper-03
+
+#Todo: Config volumes persistence data
+volumes:
+  e-commerce-kafka-broker-01-data:
+  e-commerce-kafka-broker-02-data:
+  e-commerce-mongo-db-data:
+  e-commerce-mysql-db-data:
+
+    # Tóm tắt: Dùng một volume (e-commerce-v1) cho nhiều broker là không tốt vì:
+    #           + Có thể gây xung đột dữ liệu
+    #           + Khó quản lý và giảm hiệu sất
+    #  ==> TỐt nhất là mỗi broker kafka nên có 1 volume riêng biệt để đảm bảo tính ổn định và dễ quản lý
+
+
+#Todo: Config lan network among containers
+networks:
+  e-commerce-network:
+    name: e-commerce-network
+    driver: bridge
+    #Là driver mặc định cho mạng Docker. Nó tạo một mạng nội bộ và cách ly các container với các mạng khác trên hệ thống.
+    #Chỉ các container trong cùng mạng bridge có thể giao tiếp với nhau qua hostname hoặc IP.
+
+    # 1.Tại sao dùng bridge:
+    #       Đây là lựa chọn phổ biến và hiệu quả cho các ứng dụng chạy trên một host Docker.
+    #       Đảm bảo rằng các container không thể giao tiếp với các container khác nằm ngoài mạng.
+    #    Mạng e-commerce-network được tạo khi bạn chạy docker-compose up.
+
+    # 2.Các container tham gia mạng này sẽ có:
+    #      -- Khả năng giao tiếp qua hostname: Các container có thể liên lạc với nhau bằng tên container
+    #               (tên được định nghĩa trong container_name hoặc tên service trong Compose file).
+    #
+    #      -- Cách ly mạng: Các container không thuộc mạng e-commerce-network sẽ không thể giao tiếp với các container trong mạng này.
+                # ==>  giúp tăng tính cách ly và bảo mật.
+    #
+    #      -- Giao tiếp bằng IP nội bộ: Docker sẽ gán IP nội bộ cho mỗi container trong mạng.
