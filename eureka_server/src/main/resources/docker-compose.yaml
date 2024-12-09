@@ -38,6 +38,18 @@ services:
       timeout: 10s
       retries: 5
       start_period: 20s
+    networks:
+      - e-commerce-network
+
+  redis:
+    image: redis:7.4
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - e-commerce-redis-data:/var/redis-v1/data
+    networks:
+      - e-commerce-network
 
 
   zookeeper-01:
@@ -111,6 +123,7 @@ volumes:
   e-commerce-kafka-broker-02-data:
   e-commerce-mongo-db-data:
   e-commerce-mysql-db-data:
+  e-commerce-redis-data:
 
 #Todo: Config network used for communicate between container
 networks:
